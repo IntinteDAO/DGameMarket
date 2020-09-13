@@ -4,3 +4,11 @@
 
 <div class="container">
   <div class="row">
+
+<?php
+
+if(!empty($xor_password) && $xor_password=="CHANGE ME!") {
+	echo '<div class="col-12"><div class="alert alert-danger" role="alert"><b>REMEMBER TO CHANGE THE PASSWORD IN CONFIG.PHP TO STRONG ON PRODUCTION.</b></div></div>';
+}
+
+?>
