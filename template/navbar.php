@@ -7,6 +7,7 @@
 		if(!empty($_SESSION['login'])) {
 			echo '
 			<a class="btn btn-link" href="profile.php">'.$_SESSION['login'].'</a>
+			<a class="btn btn-link" href="logout.php">Logout</a>
 			';
 		} else { echo '
 			<a class="btn btn-link" href="register.php">Register</a>
