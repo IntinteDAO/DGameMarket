@@ -8,14 +8,14 @@ include('functions/encryption.php');
 if(!empty($_POST['login']) && !empty($_POST['email']) && !empty($_POST['password1']) && !empty($_POST['password2'])) {
 	$error = 0;
 
-	if($_POST['password1']!=$_POST['password2']) { echo '<b>The passwords are not the same</b><br>'; $error = 1; }
+	if($_POST['password1']!=$_POST['password2']) { echo '<div class="col-12"><b>The passwords are not the same</b></div>'; $error = 1; }
 
 	if (preg_match("@^([a-z]){3,32}$@", $_POST['login'])) {
 		$login = encrypt($_POST['login'], $xor_cipher);
 		$db_is_login_exists = $sqlite_users_db->querySingle("SELECT id FROM users WHERE login='$login'", true);
 	} else {
 		$login = 1;
-		echo '<b>Your nickname does not meet our criteria - minimum 3 letters, maximum 32; only small letters.</b><br>'; $error=1;
+		echo '<div class="col-12"><b>Your nickname does not meet our criteria - minimum 3 letters, maximum 32; only small letters.</b></div>'; $error=1;
 	}
 
 	if (preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $_POST['email'])) {
@@ -23,11 +23,11 @@ if(!empty($_POST['login']) && !empty($_POST['email']) && !empty($_POST['password
 		$db_is_email_exists = $sqlite_users_db->querySingle("SELECT email FROM users WHERE email='$email'", true);
 	} else {
 		$email = 1;
-		echo '<b>Your email is not correct.</b><br>'; $error=1;
+		echo '<div class="col-12"><b>Your email is not correct.</b></div>'; $error=1;
 	}
 
-	if(!empty($db_is_login_exists)) { echo '<b>The user with this login is already in our database</b><br>'; $error=1; }
-	if(!empty($db_is_email_exists)) { echo '<b>The user with this email is already in our database</b><br>'; $error=1; }
+	if(!empty($db_is_login_exists)) { echo '<div class="col-12"><b>The user with this login is already in our database</b></div>'; $error=1; }
+	if(!empty($db_is_email_exists)) { echo '<div class="col-12"><b>The user with this email is already in our database</b></div>'; $error=1; }
 
 	if($error==0) {
 		$hash = password_hash($_POST['password1'], PASSWORD_BCRYPT, ['cost' => 15]);
