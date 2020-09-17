@@ -1,9 +1,18 @@
 <nav class="navbar navbar-light bg-light">
-  <a class="navbar-brand" href="index.php"><?php echo $website_title; ?></a>
+    <a class="navbar-brand" href="index.php"><?php echo $website_title; ?></a>
 
-<ul class="navbar-nav ml-auto">
-<li class="nav-item"><a class="btn btn-link" href="register.php">Register</a></li>
-</ul>
+    <ul class="navbar-nav ml-auto"><li class="nav-item">
+
+		<?php
+		if(!empty($_SESSION['login'])) {
+			echo '
+			<a class="btn btn-link" href="profile.php">'.$_SESSION['login'].'</a>
+			';
+		} else { echo '
+			<a class="btn btn-link" href="register.php">Register</a>
+			<a class="btn btn-link" href="login.php">Login</a>';
+		} ?>
+    </li></ul>
 
 </nav>
 

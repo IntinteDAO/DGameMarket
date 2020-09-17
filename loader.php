@@ -7,6 +7,7 @@ if(file_exists($sqlite_database_file)) {
     $sqlite_db = new SQLite3($sqlite_database_file);
 }
 
+session_start();
 $sqlite_users_db = $sqlite_db;
 
 
