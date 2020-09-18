@@ -1,15 +1,26 @@
 <?php
 
 include('config.php');
+include('loader.php');
 include('header.php');
 include('template/navbar.php');
-include('template/add_keys.html');
 include('functions/check_redeem.php');
-include('functions/get_title.php');
 include('functions/id_regexp_check.php');
+include('functions/encryption.php');
 
-if(!empty($_POST['keys'])) {
+if(empty($_SESSION['login'])) {
 
+	echo '<div class="col-12">You must be logged in to add game keys!</div>';
+	include('footer.php');
+	die();
+
+}
+
+include('template/add_keys.html'); // Include template
+
+if(!empty($_POST['keys'])) { // If keys are added
+
+$id_user = $_SESSION['id'];
 $keys = $_POST['keys'];
 $keys = explode("\n", htmlspecialchars($_POST['keys']));
 
@@ -20,18 +31,23 @@ $keys = explode("\n", htmlspecialchars($_POST['keys']));
 		if(id_verify($id)==true) {
 			$check_redeem = is_redeemed($id);
 
-			if($check_redeem == 0) {
-				echo 'Key is ok! - '.getTitle($id).'<br>';
-			} else if ($check_redeem == 1) {
-				echo 'Key is used!'.'<br>';
+			if($check_redeem['value'] == 0) {
+				// Key works!
+				$key = encrypt($keys[$i], $xor_cipher);
+				$title = $check_redeem['title'];
+				$db_user_exists = $sqlite_games_db->querySingle("INSERT INTO games (key, title, id_seller, id_buyer, status, price) VALUES ('$key', '$title', $id_user, 0, 0, 0)", true);
+			} else if ($check_redeem['value'] == 1) {
+				$key = encrypt($keys[$i], $xor_cipher);
+				$db_user_exists = $sqlite_games_db->querySingle("INSERT INTO games (key, title, id_seller, id_buyer, status, price) VALUES ('$key', '$title', $id_user, 0, 997, 0)", true);
 			} else {
-				echo 'Key is probably bad!'.$id.'<br>';
+				$key = encrypt($keys[$i], $xor_cipher);
+				$db_user_exists = $sqlite_games_db->querySingle("INSERT INTO games (key, title, id_seller, id_buyer, status, price) VALUES ('$key', '$title', $id_user, 0, 998, 0)", true);
 			}
 		} else {
-				echo 'Wrong ID<br>';
+				$key = encrypt($keys[$i], $xor_cipher);
+				$db_user_exists = $sqlite_games_db->querySingle("INSERT INTO games (key, title, id_seller, id_buyer, status, price) VALUES ('$key', '$title', $id_user, 0, 999, 0)", true);
 		}
 	}
-
 }
 
 include('footer.php');

@@ -32,8 +32,10 @@ if(!empty($_POST['login']) && !empty($_POST['email']) && !empty($_POST['password
 	if($error==0) {
 		$hash = password_hash($_POST['password1'], PASSWORD_BCRYPT, ['cost' => 15]);
 		$sqlite_users_db->querySingle("INSERT INTO users (login, email, password, balance) VALUES ('$login', '$email', '$hash', 0)");
-		session_start();
 		$_SESSION['login'] = $_POST['login'];
+		$_SESSION['balance'] = 0;
+		$id = $sqlite_users_db->querySingle("SELECT id FROM users WHERE email='$email'", true);
+		$_SESSION['id'] = $id['id'];
 		echo '<meta http-equiv="refresh" content="0; url=index.php"/>';
 	} else {
 		include('template/register.html');

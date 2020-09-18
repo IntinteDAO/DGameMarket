@@ -9,6 +9,7 @@ if(file_exists($sqlite_database_file)) {
 
 session_start();
 $sqlite_users_db = $sqlite_db;
+$sqlite_games_db = $sqlite_db;
 
 
 ?>

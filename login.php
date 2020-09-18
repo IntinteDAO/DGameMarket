@@ -19,6 +19,7 @@ else if(!empty($_POST['email']) && !empty($_POST['password'])) {
 	if (password_verify($password, $db_user_exists['password'])) {
 		$_SESSION['login'] = decrypt($db_user_exists['login'], $xor_cipher);
 		$_SESSION['balance'] = $db_user_exists['balance'];
+		$_SESSION['id'] = $db_user_exists['id'];
 		echo '<meta http-equiv="refresh" content="0; url=index.php"/>';
 	} else {
 		echo '<div class="col-12"><b>Invalid password or login!<b></div>';
