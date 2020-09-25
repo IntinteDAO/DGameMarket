@@ -32,5 +32,3 @@ function is_redeemed($id) {
 		return $return;
 	}
 }
-
-print_r(is_redeemed('FU7ytVfvT5hxv'));
