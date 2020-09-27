@@ -9,7 +9,7 @@ if(file_exists($sqlite_database_file)) {
 
 // Secure Session
     header('X-Frame-Options: SAMEORIGIN');
-    session_start();
+
 
     if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
 	$secure = true;
@@ -33,6 +33,7 @@ if(file_exists($sqlite_database_file)) {
         ]);
     }
 
+    session_start();
 
 $sqlite_users_db = $sqlite_db;
 $sqlite_games_db = $sqlite_db;
