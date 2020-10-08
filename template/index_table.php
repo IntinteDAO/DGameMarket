@@ -14,7 +14,7 @@ return '
 ';
 }
 
-function content_table($title, $game_price) {
+function content_table($title, $game_price, $id) {
 	return '
 
 		<tr>
@@ -22,7 +22,7 @@ function content_table($title, $game_price) {
 				'.$title.'
 			</td>
 			<td>
-				'.$game_price.' sat
+				<a href="buy_game.php?game_id='.$id.'">'.$game_price.' sat</a>
 			</td>
 		</tr>
 

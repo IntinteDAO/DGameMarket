@@ -37,6 +37,6 @@ if(file_exists($sqlite_database_file)) {
 
 $sqlite_users_db = $sqlite_db;
 $sqlite_games_db = $sqlite_db;
-
+$sqlite_invoices_db = $sqlite_db;
 
 ?>

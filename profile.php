@@ -18,7 +18,7 @@ if(empty($_SESSION['login'])) {
 	echo profile_table_start();
 	while($db_fetch_game = $db_fetch_games->fetchArray(SQLITE3_ASSOC)) {
 
-		if($db_fetch_game['status'] <= 3) { $change_price = '<input name="'.$db_fetch_game['id'].'" value="'.number_format(($db_fetch_game["price"]-$fee)/100, 2, '.', '').'" type="number" min="0.01" max="500.00" step="0.01"/>'; } else { $change_price = '---'; }
+		if($db_fetch_game['status'] <= 3) { $change_price = '<input name="'.$db_fetch_game['id'].'" value="'.number_format(($db_fetch_game["price"])/100, 2, '.', '').'" type="number" min="0" max="500.00" step="0.01"/>'; } else { $change_price = '---'; }
 
 		echo '<tr><td>'.$db_fetch_game['id'].'</td><td>'.$db_fetch_game['title'].'</td><td>$'.number_format($db_fetch_game["price"]/100, 2, '.', '').'</td><td>'.get_game_status($db_fetch_game['status']).'</td><td>'.$change_price.' +'.number_format($fee/100, 2, '.', '').' fee</td></tr>';
 	}
@@ -38,7 +38,7 @@ if(empty($_SESSION['login'])) {
 			if(is_numeric($argument)) {
 
 				if($argument * 100 > 0) {
-					$price = (str_replace(',', '.', $argument) * 100) + $fee;
+					$price = (str_replace(',', '.', $argument) * 100);
 					$sqlite_games_db->querySingle("UPDATE games SET price = $price WHERE (id_seller = $id_user AND id = $id)", true);
 					$sqlite_games_db->querySingle("UPDATE games SET status = 1 WHERE (id_seller = $id_user AND id = $id)", true);
 					echo '<div class="col-12">The key value has been modified correctly - '.$db_game_data['id'].'</div>';

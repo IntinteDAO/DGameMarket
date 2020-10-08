@@ -1,12 +1,12 @@
 <?php
+//include('../../config.php');
 error_reporting(E_ALL);
-include('../../config.php');
 
 function get_json($url, $content=null, $method='POST') {
 
 	global $access_token;
-	print_r($url);
-	print_r($content);
+//	print_r($url);
+//	print_r($content);
 
 	$opts = array(
 		'http'=>array(
@@ -23,7 +23,7 @@ function get_json($url, $content=null, $method='POST') {
 
 		$context = stream_context_create($opts);
 		$body=@file_get_contents($url,false,$context);
-		print_r($http_response_header);
+//		print_r($http_response_header);
 
 		if($body) {
 			return json_decode($body,true);
@@ -69,6 +69,25 @@ function get_all_invoices() {
 	global $url;
 	$params = new stdClass();
 	$json = get_json($url."getuserinvoices", "", "GET");
+	return $json;
+
+}
+
+function decode_invoice($invoice) {
+
+	global $url;
+	$params = new stdClass();
+	$params->limit = $invoice;
+	$json = get_json($url."decodeinvoice?invoice=$invoice", "", "GET");
+	return $json;
+
+}
+
+function getinfo() {
+
+	global $url;
+	$params = new stdClass();
+	$json = get_json($url."getinfo", "", "GET");
 	return $json;
 
 }

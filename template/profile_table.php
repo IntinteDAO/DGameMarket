@@ -9,7 +9,7 @@ return '
 			<tr>
 				<th scope="col">ID:</th>
 				<th scope="col">Title:</th>
-				<th scope="col">Price with fee:</th>
+				<th scope="col">Price without fee:</th>
 				<th scope="col">Status:</th>
 				<th scope="col">New price:</th>
 			</tr>
