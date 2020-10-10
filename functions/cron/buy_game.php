@@ -21,7 +21,7 @@ if(php_sapi_name()=="cli") {
 		$price = $db_fetch_invoice['price'];
 		$game_fee = $db_fetch_invoice['fee'];
 		$get_key = $sqlite_games_db->querySingle("SELECT key FROM games WHERE id = $game_id", true)['key'];
-		$decode_get_key = decrypt($get_key, $xor_cipher);
+		$decode_get_key = decrypt($get_key, $hashed_db_password, $iv);
 
 		if($db_fetch_invoice['status'] == 0) {
 

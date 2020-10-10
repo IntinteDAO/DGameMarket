@@ -11,13 +11,13 @@ if(isset($_SESSION['login'])) {
 }
 else if(!empty($_POST['email']) && !empty($_POST['password'])) {
 
-	$email = encrypt($_POST['email'], $xor_cipher);
+	$email = encrypt($_POST['email'], $hashed_db_password, $iv);
 	$db_user_exists['password'] = '';
 	$password = $_POST['password'];
 	$db_user_exists = $sqlite_users_db->querySingle("SELECT id, login, password, balance FROM users WHERE email='$email'", true);
 
 	if (password_verify($password, $db_user_exists['password'])) {
-		$_SESSION['login'] = decrypt($db_user_exists['login'], $xor_cipher);
+		$_SESSION['login'] = decrypt($db_user_exists['login'], $hashed_db_password, $iv);
 		$_SESSION['balance'] = $db_user_exists['balance'];
 		$_SESSION['id'] = $db_user_exists['id'];
 		echo '<meta http-equiv="refresh" content="0; url=index.php"/>';

@@ -1,6 +1,6 @@
 <?php
 
-$xor_cipher = hash('sha512', $xor_password);
+$hashed_db_password = hash('sha512', $db_password);
 
 // Init database
 if(file_exists($sqlite_database_file)) {

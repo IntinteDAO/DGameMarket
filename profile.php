@@ -73,7 +73,7 @@ echo '<div class="col-12"><center><a href="?gameedit"><button class="btn btn-pri
 		echo profile_table_bought_games_start();
 
 		while($db_game_data = $db_games_data->fetchArray(SQLITE3_ASSOC)) {
-		    echo '<tr><td>'.$db_game_data['id'].'</td><td>'.$db_game_data['title'].'</td><td>'.decrypt($db_game_data['key'], $xor_cipher).'</td></tr>';
+		    echo '<tr><td>'.$db_game_data['id'].'</td><td>'.$db_game_data['title'].'</td><td>'.decrypt($db_game_data['key'], $hashed_db_password, $iv).'</td></tr>';
 		}
 	}
 

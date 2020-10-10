@@ -11,7 +11,7 @@ if(!empty($_POST['login']) && !empty($_POST['email']) && !empty($_POST['password
 	if($_POST['password1']!=$_POST['password2']) { echo '<div class="col-12"><b>The passwords are not the same</b></div>'; $error = 1; }
 
 	if (preg_match("@^([a-z]){3,32}$@", $_POST['login'])) {
-		$login = encrypt($_POST['login'], $xor_cipher);
+		$login = encrypt($_POST['login'], $hashed_db_password, $iv);
 		$db_is_login_exists = $sqlite_users_db->querySingle("SELECT id FROM users WHERE login='$login'", true);
 	} else {
 		$login = 1;
@@ -19,7 +19,7 @@ if(!empty($_POST['login']) && !empty($_POST['email']) && !empty($_POST['password
 	}
 
 	if (preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $_POST['email'])) {
-		$email = encrypt($_POST['email'], $xor_cipher);
+		$email = encrypt($_POST['email'], $hashed_db_password, $iv);
 		$db_is_email_exists = $sqlite_users_db->querySingle("SELECT email FROM users WHERE email='$email'", true);
 	} else {
 		$email = 1;

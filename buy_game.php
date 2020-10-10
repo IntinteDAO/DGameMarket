@@ -80,7 +80,7 @@ if(isset($_GET['game_id'])) {
 			echo 'Key ready to release!<br>';
 			$game_id = $is_exists['id_game'];
 			$db_game = $sqlite_games_db->querySingle("SELECT key FROM games WHERE (id = $game_id)", true);
-			$decrypted_key = decrypt($db_game['key'], $xor_cipher);
+			$decrypted_key = decrypt($db_game['key'], $hashed_db_password, $iv);
 			echo '<a target="_blank" href="https://www.humblebundle.com/gift?key='.$decrypted_key.'">Link to game!</a>';
 		}
 

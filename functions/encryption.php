@@ -1,39 +1,19 @@
 <?php
 
-function encrypt($plainText, $key) {
-  $output = "";
-  $keyPos = 0;
-  $plainText = base64_encode($plainText);
-  for ($p = 0; $p < strlen($plainText); $p++) {
-    if ($keyPos > strlen($key) - 1) {
-      $keyPos = 0;
-    }
-    $char = $plainText[$p] ^ $key[$keyPos];
+function encrypt($plainText, $key, $iv, $cipher = "aes-256-ctr") {
 
-    $bin = str_pad(decbin(ord($char)), 8, "0", STR_PAD_LEFT);
-    $hex = dechex(bindec($bin));
-    $hex = str_pad($hex, 2, "0", STR_PAD_LEFT);
-    $output .= strtoupper($hex);
-    $keyPos++;
-  }
-  return $output;
+	$iv = base64_decode($iv);
+	$ciphertext = openssl_encrypt($plainText, $cipher, $key, $options=0, $iv);
+	return $ciphertext;
+
 }
 
-function decrypt($encryptedText, $key) {
-  $output = "";
-  $hex_arr = explode(" ", trim(chunk_split($encryptedText, 2, " ")));
+function decrypt($encryptedText, $key, $iv, $cipher = "aes-256-ctr") {
 
-  $keyPos = 0;
-  for ($p = 0; $p < sizeof($hex_arr); $p++) {
-    if ($keyPos > strlen($key) - 1) {
-      $keyPos = 0;
-    }
-    $char = chr(hexdec($hex_arr[$p])) ^ $key[$keyPos];
+	$iv = base64_decode($iv);
+	$original_plaintext = openssl_decrypt($encryptedText, $cipher, $key, $options=0, $iv);
+	return $original_plaintext;
 
-    $output .= $char;
-    $keyPos++;
-  }
-  return base64_decode($output);
 }
 
 ?>
