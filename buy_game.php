@@ -65,8 +65,7 @@ if(isset($_GET['game_id'])) {
 
 			echo 'Phase 2 / 3 - Waiting for payment.<br>';
 
-			if($qrgenerator == "qrencode") {
-			echo '<img src="functions/qrcode/qrencode.php?text='.$is_exists['invoice'].'">'; }
+			echo '<img src="functions/qrcode/qrcode.php?text='.$is_exists['invoice'].'">';
 
 			echo $is_exists['invoice'].'<br>';
 			echo $is_exists['price'] + $is_exists['fee'].' sat';
