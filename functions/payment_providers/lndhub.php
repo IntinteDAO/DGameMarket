@@ -91,3 +91,24 @@ function getinfo() {
 	return $json;
 
 }
+
+function check_route($pubkey, $amt) {
+
+	global $url;
+	$params = new stdClass();
+	$params->destination = $pubkey;
+	$params->amt = $amt;
+	$json = get_json($url."checkroute?{destination=$pubkey&amt=1}", "", "GET");
+	return $json;
+
+}
+
+function payinvoice($invoice) {
+
+	global $url;
+	$params = new stdClass();
+	$params->invoice = $invoice;
+	$json = get_json($url."payinvoice",json_encode($params));
+	return $json;
+
+}

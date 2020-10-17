@@ -60,7 +60,9 @@ echo '<div class="col-12"><center><a href="?gameedit"><button class="btn btn-pri
 } else {
 	$id_user = $_SESSION['id'];
 	$db_user_data = $sqlite_users_db->querySingle("SELECT * FROM users WHERE id = $id_user", true);
-	echo '<div class="col-12"><h2>Hello '.$_SESSION['login'].'!</h2>Your balance: '.$db_user_data['balance'].' satoshi</div>';
+	echo '<div class="col-12"><h2>Hello '.$_SESSION['login'].'!</h2>Your balance: '.$db_user_data['balance'].' satoshi ';
+	if($db_user_data['balance']>0) { echo '<a href="withdraw.php">( Withdraw funds )</a>';}
+	echo '</div>';
 	echo '<div class="col-12"><a href="?gameedit">Key modification service</a></div>';
 
 	$db_games_count = $sqlite_games_db->querySingle("SELECT COUNT(id) AS count FROM games WHERE (id_buyer = $id_user AND status = 3)", true)['count'];
