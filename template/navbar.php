@@ -6,6 +6,7 @@
 		<?php
 		if(!empty($_SESSION['login'])) {
 			echo '
+			<a class="btn btn-link" href="add_keys.php">Add keys</a>
 			<a class="btn btn-link" href="profile.php">'.$_SESSION['login'].'</a>
 			<a class="btn btn-link" href="logout.php">Logout</a>
 			';
