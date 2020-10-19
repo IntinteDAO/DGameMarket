@@ -38,6 +38,7 @@ if(php_sapi_name()=="cli") {
 				echo 'Verification 1 - Updated, game code works.'.PHP_EOL;
 			} else {
 				$sqlite_invoices_db->query("UPDATE invoices SET status = 999 WHERE id = $id");
+				$sqlite_games_db->query("UPDATE games SET status = 996 WHERE id = $game_id");
 				echo 'Verification 1 - Updated, game code failed.'.PHP_EOL;
 			}
 

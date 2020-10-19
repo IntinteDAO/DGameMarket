@@ -22,7 +22,7 @@ function content_table($title, $game_price, $id) {
 				'.$title.'
 			</td>
 			<td>
-				<a href="buy_game.php?game_id='.$id.'">'.$game_price.' sat</a>
+				<a target="_blank" href="buy_game.php?game_id='.$id.'">'.$game_price.' sat</a>
 			</td>
 		</tr>
 
