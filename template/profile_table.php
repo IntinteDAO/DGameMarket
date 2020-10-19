@@ -46,3 +46,21 @@ return '
 ';
 
 }
+
+function profile_withdraw_table_start() {
+
+return '
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th scope="col">ID:</th>
+				<th scope="col">Sats:</th>
+				<th scope="col">Date:</th>
+				<th scope="col">Status:</th>
+			</tr>
+		</thead>
+
+';
+
+}

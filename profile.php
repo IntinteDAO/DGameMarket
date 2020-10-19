@@ -80,6 +80,21 @@ echo '<div class="col-12"><center><a href="?gameedit"><button class="btn btn-pri
 	}
 
 		echo profile_table_bought_games_end();
+
+	$db_withdraws_count = $sqlite_withdraws_db->querySingle("SELECT COUNT(id) AS count FROM withdraws WHERE (id_user = $id_user)", true)['count'];
+
+	if(!empty($db_withdraws_count)) {
+		echo '<h2>Withdraws:</h2>';
+		$db_withdraws_data = $sqlite_withdraws_db->query("SELECT id, sats, timestamp, status FROM withdraws WHERE (id_user = $id_user)");
+		echo profile_withdraw_table_start();
+		while($db_withdraw_data = $db_withdraws_data->fetchArray(SQLITE3_ASSOC)) {
+			echo '<tr><td>'.$db_withdraw_data['id'].'</td><td>'.$db_withdraw_data['sats'].'</td><td>'.date('Y-m-d H:i:s', $db_withdraw_data['timestamp']).'</td><td>'.$db_withdraw_data['status'].'</td></tr>';
+		}
+		echo profile_table_bought_games_end();
+	}
+
+
+
 }
 
 include('footer.php');
