@@ -35,4 +35,8 @@ if(!file_exists($sqlite_database_file)) {
 	echo '<div class="col-12"><div class="alert alert-primary" role="alert">Database not found! Copy the database file and modify settings in config.php</div></div>';
 }
 
+if(!is_readable($sqlite_database_file)) {
+	echo '<div class="col-12"><div class="alert alert-secondary" role="alert">Master Warning! Database <b>IS NOT</b> readable, check file permissions</div></div>';
+}
+
 ?>

@@ -20,7 +20,7 @@ if(empty($_SESSION['login'])) {
 
 		if($db_fetch_game['status'] <= 3) { $change_price = '<input name="'.$db_fetch_game['id'].'" value="'.number_format(($db_fetch_game["price"])/100, 2, '.', '').'" type="number" min="0" max="500.00" step="0.01"/>'; } else { $change_price = '---'; }
 
-		echo '<tr><td>'.$db_fetch_game['id'].'</td><td>'.$db_fetch_game['title'].'</td><td>$'.number_format($db_fetch_game["price"]/100, 2, '.', '').'</td><td>'.get_game_status($db_fetch_game['status']).'</td><td>'.$change_price.' +'.number_format($fee/100, 2, '.', '').' fee</td></tr>';
+		echo '<tr><td>'.$db_fetch_game['id'].'</td><td>'.base64_decode($db_fetch_game['title']).'</td><td>$'.number_format($db_fetch_game["price"]/100, 2, '.', '').'</td><td>'.get_game_status($db_fetch_game['status']).'</td><td>'.$change_price.' +'.number_format($fee/100, 2, '.', '').' fee</td></tr>';
 	}
 	
 	echo '</table><button type="submit" id="right" class="btn btn-primary">Change price</button></form></div><div class="col-12"><p id="right">Prices will be increased by a fee '.$fee.' cents</p></div></div>';
@@ -75,7 +75,7 @@ echo '<div class="col-12"><center><a href="?gameedit"><button class="btn btn-pri
 		echo profile_table_bought_games_start();
 
 		while($db_game_data = $db_games_data->fetchArray(SQLITE3_ASSOC)) {
-		    echo '<tr><td>'.$db_game_data['id'].'</td><td>'.$db_game_data['title'].'</td><td>'.decrypt($db_game_data['key'], $hashed_db_password, $iv).'</td></tr>';
+		    echo '<tr><td>'.$db_game_data['id'].'</td><td>'.base64_decode($db_game_data['title']).'</td><td>'.decrypt($db_game_data['key'], $hashed_db_password, $iv).'</td></tr>';
 		}
 	}
 

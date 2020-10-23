@@ -34,7 +34,7 @@ $keys = explode("\n", htmlspecialchars($_POST['keys']));
 			if($check_redeem['value'] == 0) {
 				// Key works!
 				$key = encrypt($id, $hashed_db_password, $iv);
-				$title = $check_redeem['title'];
+				$title = base64_encode(trim($check_redeem['title']));
 				$db_user_exists = $sqlite_games_db->querySingle("INSERT INTO games (key, title, id_seller, id_buyer, status, price) VALUES ('$key', '$title', $id_user, 0, 0, 0)", true);
 			} else if ($check_redeem['value'] == 1) {
 				$key = encrypt($keys[$i], $hashed_db_password, $iv);

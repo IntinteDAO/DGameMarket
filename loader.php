@@ -4,7 +4,11 @@ $hashed_db_password = hash('sha512', $db_password);
 
 // Init database
 if(file_exists($sqlite_database_file)) {
-    $sqlite_db = new SQLite3($sqlite_database_file);
+
+    if(is_readable($sqlite_database_file)) {
+	    $sqlite_db = new SQLite3($sqlite_database_file);
+    }
+
 }
 
 // Secure Session
