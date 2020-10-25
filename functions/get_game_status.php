@@ -15,14 +15,17 @@ switch ($status) {
     case 3:
         return "OK; Key sold";
         break;
+    case 900:
+        return "<i>Key in the verification queue</i>";
+        break;
     case 997:
-        return "Fail; Key used";
+        return "<b>Fail; Key used</b>";
         break;
     case 998:
-        return "Fail; Key not exists";
+        return "<b>Fail; Key not exists</b>";
         break;
     case 999:
-        return "Fail; Wrong key ID";
+        return "<b>Fail; Wrong key ID</b>";
         break;
 }
 

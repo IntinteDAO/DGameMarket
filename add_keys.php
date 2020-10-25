@@ -23,32 +23,40 @@ if(!empty($_POST['keys'])) { // If keys are added
 $id_user = $_SESSION['id'];
 $keys = $_POST['keys'];
 $keys = explode("\n", htmlspecialchars($_POST['keys']));
+$count = count($keys)-1;
 
-	for($i=0; $i<=count($keys)-1; $i++) {
+if($count > 5) {
+	for($i=0; $i<=$count; $i++) {
+		$id = substr(str_replace('https://www.humblebundle.com/gift?key=', '', $keys[$i]), 0, 50);
+		$key = encrypt($id, $hashed_db_password, $iv);
+		$title = base64_encode(trim('Waiting for verification'));
+		$db_user_exists = $sqlite_games_db->querySingle("INSERT INTO games (key, title, id_seller, id_buyer, status, price) VALUES ('$key', '$title', $id_user, 0, 900, 0)", true);
+	}
+} else {
+
+	for($i=0; $i<=$count; $i++) {
+		$title = base64_encode('---');
 		$id = str_replace('https://www.humblebundle.com/gift?key=', '', $keys[$i]);
 		$id = trim($id);
 
 		if(id_verify($id)==true) {
 			$check_redeem = is_redeemed($id);
+			$key = encrypt($id, $hashed_db_password, $iv);
 
 			if($check_redeem['value'] == 0) {
 				// Key works!
-				$key = encrypt($id, $hashed_db_password, $iv);
 				$title = base64_encode(trim($check_redeem['title']));
-				$db_user_exists = $sqlite_games_db->querySingle("INSERT INTO games (key, title, id_seller, id_buyer, status, price) VALUES ('$key', '$title', $id_user, 0, 0, 0)", true);
-			} else if ($check_redeem['value'] == 1) {
-				$key = encrypt($keys[$i], $hashed_db_password, $iv);
-				$db_user_exists = $sqlite_games_db->querySingle("INSERT INTO games (key, title, id_seller, id_buyer, status, price) VALUES ('$key', '$title', $id_user, 0, 997, 0)", true);
-			} else {
-				$key = encrypt($keys[$i], $hashed_db_password, $iv);
-				$db_user_exists = $sqlite_games_db->querySingle("INSERT INTO games (key, title, id_seller, id_buyer, status, price) VALUES ('$key', '$title', $id_user, 0, 998, 0)", true);
-			}
-		} else {
-				$key = encrypt($keys[$i], $hashed_db_password, $iv);
-				$db_user_exists = $sqlite_games_db->querySingle("INSERT INTO games (key, title, id_seller, id_buyer, status, price) VALUES ('$key', '$title', $id_user, 0, 999, 0)", true);
-		}
+				$status = 0;
+			} else if ($check_redeem['value'] == 1) { $status = 997;
+			} else { $status = 998; }
+
+		} else { $status = 999; }
+
+		$sqlite_games_db->querySingle("INSERT INTO games (key, title, id_seller, id_buyer, status, price) VALUES ('$key', '$title', $id_user, 0, $status, 0)", true);
+
 	}
-echo '<meta http-equiv="refresh" content="0; url=profile.php?gameedit"/>';
 }
 
+echo '<meta http-equiv="refresh" content="0; url=profile.php?gameedit"/>';
+}
 include('footer.php');
