@@ -23,7 +23,9 @@ if(file_exists($sqlite_database_file)) {
 
     $httponly = true;
     $samesite = 'strict';
+    $maxlifetime = 60 * 60 * 24;
 
+if(php_sapi_name()!="cli") {
     if(PHP_VERSION_ID < 70300) {
         session_set_cookie_params($maxlifetime, '/; samesite='.$samesite, $_SERVER['HTTP_HOST'], $secure, $httponly);
     } else {
@@ -36,6 +38,7 @@ if(file_exists($sqlite_database_file)) {
             'samesite' => $samesite
         ]);
     }
+}
 
     session_start();
 
