@@ -10,6 +10,7 @@
 
 	$httponly = true;
 	$samesite = 'strict';
+	$maxlifetime = 60 * 60 * 24;
 
 	if(PHP_VERSION_ID < 70300) {
 		session_set_cookie_params($maxlifetime, '/; samesite='.$samesite, $_SERVER['HTTP_HOST'], $secure, $httponly);
