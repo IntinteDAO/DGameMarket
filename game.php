@@ -80,7 +80,7 @@ if(!empty($_GET['id'])) {
 
 	if(!empty($game_info)) {
 		$bitcoin_price = crypto_price('bitcoin');
-		$game_price = floor(((($game_info['price'] + $fee) / 100000000 / 100) * $bitcoin_price) * 100000000);
+		$game_price = floor((1000000 / $bitcoin_price) * ($game_info['price'] + $fee));
 		echo '<div class="col-12"><br><center><a target="_blank" href="buy_game.php?game_id='.$game_info['id'].'"><button class="btn btn-primary">Buy Now! ('.$game_price.' Satoshi)</button></a></center></div>';
 	}
 

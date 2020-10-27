@@ -29,8 +29,8 @@ if(isset($_GET['game_id'])) {
 
 			$bitcoin_price = crypto_price('bitcoin');
 			$random_id = trim(uniqid(md5(microtime().$hashed_db_password)));
-			$price = floor(((($db_game_data['price']) / 100000000 / 100) * $bitcoin_price) * 100000000);
-			$fee = floor(((($fee) / 100000000 / 100) * $bitcoin_price) * 100000000);
+			$price = floor((1000000 / $bitcoin_price) * $db_game_data['price']);
+			$fee = floor((1000000 / $bitcoin_price) * $fee);
 
 			if($buyer != 0) {
 				$is_already_added = pg_fetch_array(pg_query("SELECT id_uniq FROM invoices WHERE (id_game = $game_id AND buyer = $buyer AND timestamp < $check_expired_time)"))['id_uniq'];

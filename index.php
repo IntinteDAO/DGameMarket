@@ -34,9 +34,8 @@ include('functions/oracle.php');
 
 		$bitcoin_price = crypto_price('bitcoin');
 
-
 		for($i=0; $i<=count($game)-1; $i++) {
-			$game_price = floor(((($game[$i]['price'] + $fee) / 100000000 / 100) * $bitcoin_price) * 100000000);
+			$game_price = floor((1000000 / $bitcoin_price) * ($game[$i]['price'] + $fee));
 			echo create_card(base64_decode($game[$i]['title']),  number_format((($game[$i]['price']+$fee)/100), 2, '.', ' '), $game_price, $game[$i]['id']);
 		}
 
