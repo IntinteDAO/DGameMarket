@@ -35,7 +35,7 @@ if(!empty($_POST['login']) && !empty($_POST['email']) && !empty($_POST['password
 		$_SESSION['login'] = $_POST['login'];
 		$_SESSION['balance'] = 0;
 		$id = pg_fetch_array(pg_query("SELECT id FROM users WHERE email='$email'"))[0];
-		$_SESSION['id'] = $id['id'];
+		$_SESSION['id'] = $id;
 		echo '<meta http-equiv="refresh" content="0; url=index.php"/>';
 	} else {
 		include('template/register.html');

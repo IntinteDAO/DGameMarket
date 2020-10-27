@@ -24,11 +24,12 @@ $id_user = $_SESSION['id'];
 $keys = $_POST['keys'];
 $keys = explode("\n", htmlspecialchars($_POST['keys']));
 $count = count($keys)-1;
-if(empty($keys[$i])) { die('No keys found!'); }
+print_r($keys);
 
 if($count > 5) {
 	for($i=0; $i<=$count; $i++) {
 		$id = substr(str_replace('https://www.humblebundle.com/gift?key=', '', $keys[$i]), 0, 50);
+		if(empty($id)) { continue; }
 		$key = encrypt($id, $hashed_db_password, $iv);
 		$title = base64_encode(trim('Waiting for verification'));
 		pg_query("INSERT INTO games (key, title, id_seller, id_buyer, status, price) VALUES ('$key', '$title', $id_user, 0, 900, 0)");
@@ -36,10 +37,11 @@ if($count > 5) {
 } else {
 
 	for($i=0; $i<=$count; $i++) {
-
+		
 		$title = base64_encode('---');
 		$id = str_replace('https://www.humblebundle.com/gift?key=', '', $keys[$i]);
 		$id = trim($id);
+		if(empty($id)) { continue; }
 
 		if(id_verify($id)==true) {
 			$check_redeem = is_redeemed($id);
