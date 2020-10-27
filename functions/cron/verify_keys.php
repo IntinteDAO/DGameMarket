@@ -10,6 +10,7 @@ if(php_sapi_name()=="cli") {
 	include('functions/encryption.php');
 
 	$db_fetch_keys_to_verify = pg_fetch_all(pg_query("SELECT id, key, title FROM games WHERE status = 900 LIMIT 1"));
+	if(empty($db_fetch_keys_to_verify)) { die(); }
 
 	foreach($db_fetch_keys_to_verify as $db_key_to_verify) {
 

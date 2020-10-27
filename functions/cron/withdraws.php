@@ -8,6 +8,7 @@ if(php_sapi_name()=="cli") {
 	$provider_initialize = 0;
 
 	$db_fetch_withdraws = pg_fetch_all(pg_query("SELECT * FROM withdraws WHERE status = '1'"));
+        if(empty($db_fetch_withdraws)) { die(); }
 
 	foreach($db_fetch_withdraws as $db_fetch_withdraw) {
 

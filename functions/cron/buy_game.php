@@ -12,6 +12,7 @@ if(php_sapi_name()=="cli") {
 
 	$time = time();
 	$db_fetch_invoices = pg_fetch_all(pg_query("SELECT id, id_game, buyer, price, fee, invoice, status FROM invoices WHERE (timestamp + $expire_buy_time) > $time"));
+	if(empty($db_fetch_invoices)) { die(); }
 
 	foreach($db_fetch_invoices as $db_fetch_invoice) {
 
