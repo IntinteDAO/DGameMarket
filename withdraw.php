@@ -18,7 +18,7 @@ if(empty($_SESSION['login'])) {
 
 		if($invoice_info['timestamp'] + $invoice_info['expiry'] < time()) { $error['expired'] = 1; }
 		$id_user = $_SESSION['id'];
-		$balance = $sqlite_users_db->querySingle("SELECT balance FROM users WHERE id = $id_user", true)['balance'];
+		$balance = pg_fetch_array(pg_query("SELECT balance FROM users WHERE id = $id_user"))['balance'];
 		if($balance < $invoice_info['num_satoshis']) { $error['balance'] = 1; }
 		if($invoice_info['num_satoshis'] == 0) { $error['balance'] = 2; }
 
@@ -27,7 +27,7 @@ if(empty($_SESSION['login'])) {
 			$id_user = $_SESSION['id'];
 			$time = time();
 			$sats = $invoice_info['num_satoshis'];
-			$sqlite_withdraws_db->query("INSERT INTO withdraws (id_user, lninvoice, timestamp, sats, status) VALUES ($id_user, '$lninvoice', $time, $sats, 0)"); // Insert invoice to database with status 0 (disabled)
+			pg_query("INSERT INTO withdraws (id_user, lninvoice, timestamp, sats, status) VALUES ($id_user, '$lninvoice', $time, $sats, '0')"); // Insert invoice to database with status 0 (disabled)
 			echo withdraw_confirmation($invoice_info['description'], $invoice_info['num_satoshis'], $lninvoice);
 		} else {
 			if($error['balance'] == 1) { echo '<div class="col-12">You want to pay out more than you have!</div>'; }
@@ -41,13 +41,13 @@ if(empty($_SESSION['login'])) {
 
 			if (preg_match("/^[a-z0-9]{250,400}$/", strtolower($_GET['lninvoice']))) {
 				$lninvoice = trim(strtolower($_GET['lninvoice']));
-				$sqlite_withdraws_db->query("UPDATE withdraws SET status=1 WHERE lninvoice = '$lninvoice'"); // Set status 1 (confirmed withdraw)
+				pg_query("UPDATE withdraws SET status='1' WHERE lninvoice = '$lninvoice'"); // Set status 1 (confirmed withdraw)
 				echo '<div class="col-12">The withdrawal of funds was added to the payout system. In case of problems, contact the node administrators.</div>';
 			}
 
 } else {
 	$id_user = $_SESSION['id'];
-	$balance = $sqlite_users_db->querySingle("SELECT balance FROM users WHERE id = $id_user", true)['balance'];
+	$balance = pg_fetch_array(pg_query("SELECT balance FROM users WHERE id = $id_user"))['balance'];
 
 	if($balance > 0) {
 		include('template/withdraw.html');

@@ -17,7 +17,7 @@ if(!empty($_GET['id'])) {
 	if(preg_match('/^[A-Za-z0-9+\/]+={0,2}$/', $_GET['id'])) {
 		$title = $_GET['id'];
 		$decoded_title = base64_decode($title);
-		$db_games_get_count_of_title = $sqlite_games_db->querySingle("SELECT COUNT(id) AS count FROM games WHERE (status = 1 AND title = '$title' AND id_seller != $id_user)");
+		$db_games_get_count_of_title = pg_fetch_array(pg_query("SELECT COUNT(id) AS count FROM games WHERE (status = 1 AND title = '$title' AND id_seller != $id_user)"))[0];
 		$filename = md5(strtolower($decoded_title));
 		if(file_exists('database/'.$filename.'.json')) {
 			$file = file('database/'.$filename.'.json')[0];
@@ -28,6 +28,8 @@ if(!empty($_GET['id'])) {
 
 			if(!empty($data['metacritic'])) {
 				$metacritic = '<b>Metacritic score: <a target="_blank" href="'.$data['metacritic']['url'].'">'.$data['metacritic']['score'].' / 100</a></b><br>';
+			} else {
+				$metacritic = "";
 			}
 
 			$platforms_integer = $data['platforms'];
@@ -74,7 +76,7 @@ if(!empty($_GET['id'])) {
 			</div>';
 	}
 
-	$game_info = $sqlite_games_db->querySingle("SELECT id, price FROM games WHERE (status = 1 AND title = '$title' AND id_seller != $id_user) ORDER BY price asc", TRUE);
+	$game_info = pg_fetch_array(pg_query("SELECT id, price FROM games WHERE (status = 1 AND title = '$title' AND id_seller != $id_user) ORDER BY price asc"));
 
 	if(!empty($game_info)) {
 		$bitcoin_price = crypto_price('bitcoin');

@@ -23,21 +23,21 @@ if(isset($_GET['game_id'])) {
 	$game_id = $_GET['game_id'];
 
 	if(is_numeric($game_id) && $game_id > 0) {
-		$db_game_data = $sqlite_games_db->querySingle("SELECT price, key FROM games WHERE (id = $game_id AND status=1)", true);
+		$db_game_data = pg_fetch_array(pg_query("SELECT price, key FROM games WHERE (id = $game_id AND status=1)"));
 
 		if(!empty($db_game_data)) {
 
 			$bitcoin_price = crypto_price('bitcoin');
-			$random_id = trim(uniqid(md5(microtime())));
+			$random_id = trim(uniqid(md5(microtime().$hashed_db_password)));
 			$price = floor(((($db_game_data['price']) / 100000000 / 100) * $bitcoin_price) * 100000000);
 			$fee = floor(((($fee) / 100000000 / 100) * $bitcoin_price) * 100000000);
 
 			if($buyer != 0) {
-				$is_already_added = $sqlite_invoices_db->querySingle("SELECT id_uniq FROM invoices WHERE (id_game = $game_id AND buyer = $buyer AND timestamp < $check_expired_time)", true)['id'];
+				$is_already_added = pg_fetch_array(pg_query("SELECT id_uniq FROM invoices WHERE (id_game = $game_id AND buyer = $buyer AND timestamp < $check_expired_time)"))['id_uniq'];
 			}
 
 			if(empty($is_already_added)) {
-				$sqlite_invoices_db->querySingle("INSERT INTO invoices (id_game, id_uniq, buyer, price, fee, invoice, timestamp, status) VALUES ($game_id, '$random_id', $buyer, $price, $fee, 0, $timestamp, 0)", true);
+				pg_query("INSERT INTO invoices (id_game, id_uniq, buyer, price, fee, invoice, timestamp, status) VALUES ($game_id, '$random_id', $buyer, $price, $fee, '0', $timestamp, 0)");
 			}
 			echo '<meta http-equiv="refresh" content="0; url=?id='.$random_id.'" />';
 		} else {
@@ -56,7 +56,7 @@ if(isset($_GET['game_id'])) {
 		die('Wrong invoice ID');
 	}
 
-	$is_exists = $sqlite_invoices_db->querySingle("SELECT id_game, buyer, timestamp, id_uniq, status, invoice, price, fee FROM invoices WHERE (id_uniq = '$id')", true);
+	$is_exists = pg_fetch_array(pg_query("SELECT id_game, buyer, timestamp, id_uniq, status, invoice, price, fee FROM invoices WHERE (id_uniq = '$id')"));
 
 		if(empty($is_exists)) { die("Sorry, this invoice ID is invalid!"); }
 		if($is_exists['buyer'] != $buyer ) { die("Sorry, this invoice is not for you!"); }
@@ -78,7 +78,7 @@ if(isset($_GET['game_id'])) {
 
 			echo '<div class="col-12">Key ready to release!<br>';
 			$game_id = $is_exists['id_game'];
-			$db_game = $sqlite_games_db->querySingle("SELECT key FROM games WHERE (id = $game_id)", true);
+			$db_game = pg_fetch_array(pg_query("SELECT key FROM games WHERE (id = $game_id)"));
 			$decrypted_key = decrypt($db_game['key'], $hashed_db_password, $iv);
 			echo '<a target="_blank" href="https://www.humblebundle.com/gift?key='.$decrypted_key.'">Link to game!</a></div>';
 		}

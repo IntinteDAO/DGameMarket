@@ -24,17 +24,19 @@ $id_user = $_SESSION['id'];
 $keys = $_POST['keys'];
 $keys = explode("\n", htmlspecialchars($_POST['keys']));
 $count = count($keys)-1;
+if(empty($keys[$i])) { die('No keys found!'); }
 
 if($count > 5) {
 	for($i=0; $i<=$count; $i++) {
 		$id = substr(str_replace('https://www.humblebundle.com/gift?key=', '', $keys[$i]), 0, 50);
 		$key = encrypt($id, $hashed_db_password, $iv);
 		$title = base64_encode(trim('Waiting for verification'));
-		$db_user_exists = $sqlite_games_db->querySingle("INSERT INTO games (key, title, id_seller, id_buyer, status, price) VALUES ('$key', '$title', $id_user, 0, 900, 0)", true);
+		pg_query("INSERT INTO games (key, title, id_seller, id_buyer, status, price) VALUES ('$key', '$title', $id_user, 0, 900, 0)");
 	}
 } else {
 
 	for($i=0; $i<=$count; $i++) {
+
 		$title = base64_encode('---');
 		$id = str_replace('https://www.humblebundle.com/gift?key=', '', $keys[$i]);
 		$id = trim($id);
@@ -52,7 +54,7 @@ if($count > 5) {
 
 		} else { $status = 999; }
 
-		$sqlite_games_db->querySingle("INSERT INTO games (key, title, id_seller, id_buyer, status, price) VALUES ('$key', '$title', $id_user, 0, $status, 0)", true);
+		pg_query("INSERT INTO games (key, title, id_seller, id_buyer, status, price) VALUES ('$key', '$title', $id_user, 0, $status, 0)");
 
 	}
 }

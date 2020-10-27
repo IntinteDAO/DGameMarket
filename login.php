@@ -14,17 +14,18 @@ else if(!empty($_POST['email']) && !empty($_POST['password'])) {
 	$email = encrypt($_POST['email'], $hashed_db_password, $iv);
 	$db_user_exists['password'] = '';
 	$password = $_POST['password'];
-	$db_user_exists = $sqlite_users_db->querySingle("SELECT id, login, password, balance FROM users WHERE email='$email'", true);
+	$db_user_exists = pg_fetch_array(pg_query("SELECT id, login, password, balance FROM users WHERE email='$email'"));
 
-	if (password_verify($password, $db_user_exists['password'])) {
-		$_SESSION['login'] = decrypt($db_user_exists['login'], $hashed_db_password, $iv);
-		$_SESSION['balance'] = $db_user_exists['balance'];
-		$_SESSION['id'] = $db_user_exists['id'];
-		echo '<meta http-equiv="refresh" content="0; url=index.php"/>';
-	} else {
-		echo '<div class="col-12"><b>Invalid password or login!<b></div>';
-	}
-
+	if(!empty($db_user_exists)) {
+		if (password_verify($password, $db_user_exists['password'])) {
+			$_SESSION['login'] = decrypt($db_user_exists['login'], $hashed_db_password, $iv);
+			$_SESSION['balance'] = $db_user_exists['balance'];
+			$_SESSION['id'] = $db_user_exists['id'];
+			echo '<meta http-equiv="refresh" content="0; url=index.php"/>';
+		} else {
+			echo '<div class="col-12"><b>Invalid password or login!<b></div>';
+		}
+	} else { echo '<div class="col-12"><b>Invalid password or login!<b></div>'; }
 }
 
 if(!isset($_SESSION['login'])) {

@@ -11,16 +11,16 @@ if(php_sapi_name()=="cli") {
 	$provider_initialize = 0;
 
 	$time = time();
-	$db_fetch_invoices = $sqlite_invoices_db->query("SELECT id, id_game, buyer, price, fee, invoice, status FROM invoices WHERE (timestamp + $expire_buy_time) > $time");
+	$db_fetch_invoices = pg_fetch_all(pg_query("SELECT id, id_game, buyer, price, fee, invoice, status FROM invoices WHERE (timestamp + $expire_buy_time) > $time"));
 
-	while($db_fetch_invoice = $db_fetch_invoices->fetchArray(SQLITE3_ASSOC)) {
+	foreach($db_fetch_invoices as $db_fetch_invoice) {
 
 		$id = $db_fetch_invoice['id'];
 		$game_id = $db_fetch_invoice['id_game'];
 		$invoice = $db_fetch_invoice['invoice'];
 		$price = $db_fetch_invoice['price'];
 		$game_fee = $db_fetch_invoice['fee'];
-		$get_key = $sqlite_games_db->querySingle("SELECT key FROM games WHERE id = $game_id", true)['key'];
+		$get_key = pg_fetch_array(pg_query("SELECT key FROM games WHERE id = $game_id"))['key'];
 		$decode_get_key = decrypt($get_key, $hashed_db_password, $iv);
 
 		if($db_fetch_invoice['status'] == 0) {
@@ -29,16 +29,16 @@ if(php_sapi_name()=="cli") {
 			$verification = is_redeemed($decode_get_key);
 
 			if($verification['value'] == 0) {
-				$sqlite_invoices_db->query("UPDATE invoices SET status = 1 WHERE id = $id");
+				pg_query("UPDATE invoices SET status = 1 WHERE id = $id");
 				if($provider_initialize == 0) { include('functions/payment_providers/'.$payment_provider.'.php'); $provider_initialize = 1; }
 				$full_price = $price + $game_fee;
 				$buyer = $db_fetch_invoice['buyer'];
 				if($buyer != 0) { $invoice = create_invoice($full_price, "$buyer"); } else { $invoice = create_invoice($full_price, "anonymous"); }
-				$sqlite_invoices_db->query("UPDATE invoices SET invoice = '$invoice' WHERE id = $id");
+				pg_query("UPDATE invoices SET invoice = '$invoice' WHERE id = $id");
 				echo 'Verification 1 - Updated, game code works.'.PHP_EOL;
 			} else {
-				$sqlite_invoices_db->query("UPDATE invoices SET status = 999 WHERE id = $id");
-				$sqlite_games_db->query("UPDATE games SET status = 996 WHERE id = $game_id");
+				pg_query("UPDATE invoices SET status = 999 WHERE id = $id");
+				pg_query("UPDATE games SET status = 996 WHERE id = $game_id");
 				echo 'Verification 1 - Updated, game code failed.'.PHP_EOL;
 			}
 
@@ -52,7 +52,7 @@ if(php_sapi_name()=="cli") {
 
 				if($get_all_invoices[$i]['pay_req'] == $invoice && !empty($get_all_invoices[$i]['ispaid'])) {
 					// Payment completed
-					$sqlite_invoices_db->query("UPDATE invoices SET status = 2 WHERE id = $id");
+					pg_query("UPDATE invoices SET status = 2 WHERE id = $id");
 				}
 
 			}
@@ -63,19 +63,19 @@ if(php_sapi_name()=="cli") {
 
 			if($verification['value'] == 0) {
 				$buyer = $db_fetch_invoice['buyer'];
-				$sqlite_games_db->query("UPDATE games SET status = 3 WHERE (id = $game_id)");
-				$sqlite_games_db->query("UPDATE games SET id_buyer = $buyer WHERE id = $game_id");
-				$sqlite_invoices_db->query("UPDATE invoices SET status = 3 WHERE id = $id");
-				$id_seller = $sqlite_games_db->querySingle("SELECT id_seller FROM games WHERE id = $game_id", true)['id_seller'];
-				$sqlite_users_db->query("UPDATE users SET balance = balance + $price WHERE id = $id_seller");
+				pg_query("UPDATE games SET status = 3 WHERE (id = $game_id)");
+				pg_query("UPDATE games SET id_buyer = $buyer WHERE id = $game_id");
+				pg_query("UPDATE invoices SET status = 3 WHERE id = $id");
+				$id_seller = pg_fetch_array(pg_query("SELECT id_seller FROM games WHERE id = $game_id"))['id_seller'];
+				pg_query("UPDATE users SET balance = balance + $price WHERE id = $id_seller");
 				echo 'Verification 4 - Updated, game code works.'.PHP_EOL;
 			} else {
 
 				if($buyer != 0) {
-					$sqlite_invoices_db->query("UPDATE invoices SET status = 998 WHERE id = $id");
-					$sqlite_users_db->query("UPDATE users SET balance = balance + $price WHERE id = $buyer");
+					pg_query("UPDATE invoices SET status = 998 WHERE id = $id");
+					pg_query("UPDATE users SET balance = balance + $price WHERE id = $buyer");
 				} else {
-					$sqlite_invoices_db->query("UPDATE invoices SET status = 997 WHERE id = $id");
+					pg_query("UPDATE invoices SET status = 997 WHERE id = $id");
 				}
 
 				echo 'Verification 4 - Updated, game code failed, chargeback'.PHP_EOL;

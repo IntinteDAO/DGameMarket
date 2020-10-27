@@ -3,13 +3,7 @@
 $hashed_db_password = hash('sha512', $db_password);
 
 // Init database
-if(file_exists($sqlite_database_file)) {
-
-    if(is_readable($sqlite_database_file)) {
-	    $sqlite_db = new SQLite3($sqlite_database_file);
-    }
-
-}
+$postgresql_db = pg_connect("host=$hostname port=$port dbname=$dbname user=$dbuser password=$dbpassword");
 
 // Secure Session
     header('X-Frame-Options: SAMEORIGIN');
@@ -41,10 +35,5 @@ if(php_sapi_name()!="cli") {
 }
 
     session_start();
-
-$sqlite_users_db = $sqlite_db;
-$sqlite_games_db = $sqlite_db;
-$sqlite_invoices_db = $sqlite_db;
-$sqlite_withdraws_db = $sqlite_db;
 
 ?>

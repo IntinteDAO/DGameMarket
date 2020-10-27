@@ -34,6 +34,8 @@ function get_json($url, $content=null, $method='POST') {
 
 $url='https://lndhub.herokuapp.com/';
 
+if(empty($lndhub_user) || empty($lndhub_pass)) { die('Misconfiguration detected'); }
+
 function create_account() {
 
 	global $url;

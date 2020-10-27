@@ -9,9 +9,9 @@ if(php_sapi_name()=="cli") {
 	include('functions/id_regexp_check.php');
 	include('functions/encryption.php');
 
-	$db_fetch_keys_to_verify = $sqlite_games_db->query("SELECT id, key, title FROM games WHERE status = 900 LIMIT 1");
+	$db_fetch_keys_to_verify = pg_fetch_all(pg_query("SELECT id, key, title FROM games WHERE status = 900 LIMIT 1"));
 
-	while($db_key_to_verify = $db_fetch_keys_to_verify->fetchArray(SQLITE3_ASSOC)) {
+	foreach($db_fetch_keys_to_verify as $db_key_to_verify) {
 
 		$id = decrypt($db_key_to_verify['key'], $hashed_db_password, $iv);
 		$key = $db_key_to_verify['key'];
@@ -32,8 +32,8 @@ if(php_sapi_name()=="cli") {
 				$status = 999;
 		}
 
-	$sqlite_games_db->querySingle("UPDATE games SET status = $status WHERE status = 900 AND key = '$key' ");
-	if($status == 0) { $sqlite_games_db->querySingle("UPDATE games SET title = '$title' WHERE key = '$key' "); }
+	pg_query("UPDATE games SET status = $status WHERE status = 900 AND key = '$key' ");
+	if($status == 0) { pg_query("UPDATE games SET title = '$title' WHERE key = '$key' "); }
 
 	}
 }
