@@ -38,7 +38,10 @@ if(isset($_GET['game_id'])) {
 
 			if(empty($is_already_added)) {
 				pg_query("INSERT INTO invoices (id_game, id_uniq, buyer, price, fee, invoice, timestamp, status) VALUES ($game_id, '$random_id', $buyer, $price, $fee, '0', $timestamp, 0)");
+			} else {
+				$random_id = $is_already_added;
 			}
+
 			echo '<meta http-equiv="refresh" content="0; url=?id='.$random_id.'" />';
 		} else {
 			echo 'Wrong key';
