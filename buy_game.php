@@ -65,18 +65,19 @@ if(isset($_GET['game_id'])) {
 		if($is_exists['buyer'] != $buyer ) { die("Sorry, this invoice is not for you!"); }
 		if((($is_exists['timestamp'] + $expire_buy_time) < $timestamp ) && $is_exists['status']<3) { die("Sorry, this invoice is expired!"); }
 		if($is_exists['status']<3) { echo '<div class="col-12">Time to expire: '.($is_exists['timestamp'] - $timestamp + $expire_buy_time).' seconds</div>'; }
-		if($is_exists['status'] == 0) { echo '<div class="col-12">Phase 1 / 3 - Verification of the game key.</div><meta http-equiv="refresh" content="10">'; }
+		if($is_exists['status'] == 0) { echo '<div class="col-12">Phase 1 / 3 - Verification of the game key.</div><meta http-equiv="refresh" content="10">'; include('template/circle.html'); }
 		if($is_exists['status'] == 1) {
 
 			echo '<div class="col-12">Phase 2 / 3 - Waiting for payment.</div><meta http-equiv="refresh" content="10">';
 
-			echo '<div class="col-12"><img src="functions/qrcode/qrcode.php?text='.$is_exists['invoice'].'"></div>';
+			echo '<div class="col-12"><center><img src="functions/qrcode/qrcode.php?text='.$is_exists['invoice'].'"></center></div>';
 
 			echo '<div class="col-12"><p class="text-break">'.$is_exists['invoice'].'</p></div>';
 			echo '<div class="col-12"><b>'.($is_exists['price'] + $is_exists['fee']).'</b> sat</div>';
+			 include('template/circle.html');
 
 		}
-		if($is_exists['status'] == 2) { echo '<div class="col-12">Phase 3 / 3 - Repeat key verification.</div><meta http-equiv="refresh" content="10">'; }
+		if($is_exists['status'] == 2) { echo '<div class="col-12">Phase 3 / 3 - Repeat key verification.</div><meta http-equiv="refresh" content="10">'; include('template/circle.html'); }
 		if($is_exists['status'] == 3) {
 
 			echo '<div class="col-12">Key ready to release!<br>';
