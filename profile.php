@@ -13,7 +13,7 @@ if(empty($_SESSION['login'])) {
 } else if(isset($_GET['gameedit'])) {
 
 	$id_user = $_SESSION['id'];
-	$db_fetch_games = pg_fetch_all(pg_query("SELECT id, key, title, status, price FROM games WHERE id_seller='$id_user' ORDER BY status"));
+	$db_fetch_games = pg_fetch_all(pg_query("SELECT id, key, title, status, price FROM games WHERE id_seller='$id_user' ORDER BY status, title"));
 
 	// Profile_table.php
 	echo profile_table_start();
