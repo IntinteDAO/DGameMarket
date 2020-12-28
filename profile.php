@@ -39,8 +39,10 @@ if(empty($_SESSION['login'])) {
 
 			if(is_numeric($argument)) {
 
+				$price = (str_replace(',', '.', $argument) * 100);
+				if($db_game_data['price'] == $price) { continue; }
+
 				if($argument * 100 > 0) {
-					$price = (str_replace(',', '.', $argument) * 100);
 					pg_query("UPDATE games SET price = $price WHERE (id_seller = $id_user AND id = $id)");
 					pg_query("UPDATE games SET status = 1 WHERE (id_seller = $id_user AND id = $id)");
 					echo '<div class="col-12">The key value has been modified correctly - '.$db_game_data['id'].'</div>';
