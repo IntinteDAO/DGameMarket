@@ -23,7 +23,7 @@ include('functions/oracle.php');
 
 	if($db_games_data_count > 0) {
 
-		$db_games_data = pg_fetch_all(pg_query("SELECT DISTINCT title FROM games WHERE (id_seller != $id_user AND status = 1) GROUP BY title LIMIT $limit_games_per_page OFFSET ($limit_games_per_page * ($page-1))"));
+		$db_games_data = pg_fetch_all(pg_query("SELECT title FROM games WHERE (id_seller != $id_user AND status = 1) GROUP BY title ORDER BY decode(title, 'base64')::text LIMIT $limit_games_per_page OFFSET ($limit_games_per_page * ($page-1))"));
 		for($i=0; $i<=count($db_games_data)-1; $i++) {
 			$game[$i]['title'] = $db_games_data[$i]['title'];
 			$title = $game[$i]['title'];
