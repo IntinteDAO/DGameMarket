@@ -1,3 +1,7 @@
 #right {
     float: right;
 }
+
+#lua-navbar-toggler:checked ~ .collapse {
+    display:block;
+}

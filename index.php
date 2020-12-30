@@ -42,7 +42,7 @@ if($max_pages > 1) {
 
 	echo '<div class="col-12">
 		<nav>
-			<ul class="pagination justify-content-center">';
+			<ul class="pagination justify-content-center flex-wrap">';
 
 	if($page != 1) {
 		echo '<li class="page-item"><a class="page-link" href="?page='.($page-1).'">Previous</a></li>';
