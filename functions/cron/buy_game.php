@@ -23,10 +23,16 @@ if(php_sapi_name()=="cli") {
 		$game_fee = $db_fetch_invoice['fee'];
 		$get_key = pg_fetch_array(pg_query("SELECT key FROM games WHERE id = $game_id"))['key'];
 		$decode_get_key = decrypt($get_key, $hashed_db_password, $iv);
+		$is_bought = pg_fetch_array(pg_query("SELECT status FROM games WHERE id = $game_id"))['status'];
 
 		if($db_fetch_invoice['status'] == 0) {
 
 			// Step 1 - Check if the game is still available on Humble Bundle
+			if($is_bought!=1) {
+				pg_query("UPDATE invoices SET status = 995 WHERE id = $id");
+				continue;
+			}
+
 			$verification = is_redeemed($decode_get_key);
 
 			if($verification['value'] == 0) {
@@ -45,6 +51,11 @@ if(php_sapi_name()=="cli") {
 
 		} else if($db_fetch_invoice['status'] == 1) {
 
+			if($is_bought!=1) {
+				pg_query("UPDATE invoices SET status = 994 WHERE id = $id");
+				continue;
+			}
+
 			// Step 3 - Verify payment
 			if($provider_initialize == 0) { include('functions/payment_providers/'.$payment_provider.'.php'); $provider_initialize = 1; }
 			$get_all_invoices = get_all_invoices();
@@ -59,11 +70,21 @@ if(php_sapi_name()=="cli") {
 			}
 		} else if($db_fetch_invoice['status'] == 2) {
 
+				$buyer = $db_fetch_invoice['buyer'];
+
+			if($is_bought!=1) {
+				if($buyer != 0) {
+					pg_query("UPDATE invoices SET status = 993 WHERE id = $id");
+					pg_query("UPDATE users SET balance = balance + $price WHERE id = $buyer");
+				} else {
+					pg_query("UPDATE invoices SET status = 992 WHERE id = $id");
+				}
+				continue;
+			}
+
 			// Step 4 - Verify key again
 			$verification = is_redeemed($decode_get_key);
-
 			if($verification['value'] == 0) {
-				$buyer = $db_fetch_invoice['buyer'];
 				pg_query("UPDATE games SET status = 3 WHERE (id = $game_id)");
 				pg_query("UPDATE games SET id_buyer = $buyer WHERE id = $game_id");
 				pg_query("UPDATE invoices SET status = 3 WHERE id = $id");

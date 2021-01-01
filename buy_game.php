@@ -88,6 +88,13 @@ if(isset($_GET['game_id'])) {
 		}
 
 
+		if($is_exists['status'] == 995 || $is_exists['status'] == 994 || $is_exists['status'] == 993) {
+			echo '<div class="col-12">Oh, no! Someone bought the game just before you. If you have paid, the money will be returned to your DGameMarket account.<br>';
+		} else if($is_exists['status'] == 992) {
+			echo '<div class="col-12">Oh, no! Someone bought the game just before you. If you paid an invoice and were not logged in, please contact the administrator with your transaction ID (or save the whole address of the site).<br>';
+		}
+
+
 } else {
 	echo 'Unknown parameters';
 }
