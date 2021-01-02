@@ -39,7 +39,7 @@ if(empty($_SESSION['login'])) {
 
 			if(is_numeric($argument)) {
 
-				$price = (str_replace(',', '.', $argument) * 100);
+				$price = trim(str_replace(',', '.', $argument) * 100);
 				if($db_game_data['price'] == $price) { continue; }
 
 				if($argument * 100 > 0) {
